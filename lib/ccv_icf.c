@@ -8,12 +8,20 @@
 #include <dispatch/dispatch.h>
 #endif
 
+// const ccv_icf_param_t ccv_icf_default_params = {
+// 	.min_neighbors = 2,
+// 	.threshold = 0,
+// 	.step_through = 2,
+// 	.flags = 0,
+// 	.interval = 8,
+// };
+
 const ccv_icf_param_t ccv_icf_default_params = {
-	.min_neighbors = 2,
-	.threshold = 0,
-	.step_through = 2,
-	.flags = 0,
-	.interval = 8,
+	2, //min_neighbors
+        0, //flags
+        2, //step_through
+        8, //interval
+	0, //threshold
 };
 
 // this uses a look up table for cubic root computation because rgb to luv only requires data within range of 0~1
@@ -882,12 +890,14 @@ static ccv_icf_decision_tree_cache_t _ccv_icf_find_first_feature(ccv_icf_feature
 	size_t step = (3 * (positives->rnum + negatives->rnum) + 3) & -4;
 	ccv_icf_first_feature_find_t* feature_find = (ccv_icf_first_feature_find_t*)ccmalloc(sizeof(ccv_icf_first_feature_find_t) * feature_size);
 	parallel_for(i, feature_size) {
-		ccv_icf_first_feature_find_t min_find = {
-			.error_rate = 1.0,
-			.error_index = 0,
-			.weigh = {0, 0},
-			.count = {0, 0},
-		};
+		ccv_icf_first_feature_find_t min_find;
+                min_find.error_rate = 1.0;
+                min_find.error_index = 0;
+                min_find.weigh[0] = 0;
+		min_find.weigh[1] = 0;
+                min_find.count[0] = 0;
+		min_find.count[1] = 0;
+                
 		double weigh[2] = {0, 0};
 		int count[2] = {0, 0};
 		int j;
@@ -919,12 +929,14 @@ static ccv_icf_decision_tree_cache_t _ccv_icf_find_first_feature(ccv_icf_feature
 		}
 		feature_find[i] = min_find;
 	} parallel_endfor
-	ccv_icf_first_feature_find_t best = {
-		.error_rate = 1.0,
-		.error_index = -1,
-		.weigh = {0, 0},
-		.count = {0, 0},
-	};
+	ccv_icf_first_feature_find_t best;
+        best.error_rate = 1.0;
+        best.error_index = -1;
+        best.weigh[0] = 0;
+        best.weigh[1] = 0;
+        best.count[0] = 0;
+        best.count[1] = 0;
+        
 	int feature_index = 0;
 	for (i = 0; i < feature_size; i++)
 		if (feature_find[i].error_rate < best.error_rate)
@@ -989,12 +1001,15 @@ static double _ccv_icf_find_second_feature(ccv_icf_decision_tree_cache_t interme
 	double* aweigh = intermediate_cache.weigh + leaf * 2;
 	ccv_icf_second_feature_find_t* feature_find = (ccv_icf_second_feature_find_t*)ccmalloc(sizeof(ccv_icf_second_feature_find_t) * feature_size);
 	parallel_for(i, feature_size) {
-		ccv_icf_second_feature_find_t min_find = {
-			.error_rate = 1.0,
-			.error_index = 0,
-			.weigh = {0, 0},
-		};
-		double weigh[2] = {0, 0};
+		ccv_icf_second_feature_find_t min_find;
+		min_find.error_rate = 1.0;
+		min_find.error_index = 0;
+		min_find.weigh[0] = 0;
+		min_find.weigh[1] = 0;
+                        
+		double weigh[2];
+                weigh[0] = 0;
+                weigh[1] = 0;
 		uint8_t* computed = precomputed + step * i;
 		int j, k;
 		for (j = 0; j < positives->rnum + negatives->rnum; j++)
@@ -1034,11 +1049,12 @@ static double _ccv_icf_find_second_feature(ccv_icf_decision_tree_cache_t interme
 		}
 		feature_find[i] = min_find;
 	} parallel_endfor
-	ccv_icf_second_feature_find_t best = {
-		.error_rate = 1.0,
-		.error_index = -1,
-		.weigh = {0, 0},
-	};
+	ccv_icf_second_feature_find_t best;
+        best.error_rate = 1.0;
+        best.error_index = -1;
+        best.weigh[0] = 0;
+        best.weigh[1] = 0;
+        
 	int i;
 	int feature_index = 0;
 	for (i = 0; i < feature_size; i++)

@@ -173,15 +173,26 @@ static void _ccv_set_union_mser(ccv_dense_matrix_t* a, ccv_dense_matrix_t* h, cc
 						}
 						if (!root0)
 						{
-							ccv_mser_history_t root = {
-								.rank = 0,
-								.size = 1,
-								.value = v,
-								.shortcut = history_list->rnum,
-								.parent = history_list->rnum,
-								.head = node0,
-								.tail = node1
-							};
+// 							ccv_mser_history_t root = {
+// 								.rank = 0,
+// 								.size = 1,
+// 								.value = v,
+// 								.shortcut = history_list->rnum,
+// 								.parent = history_list->rnum,
+// 								.head = node0,
+// 								.tail = node1
+// 							};
+                                                        ccv_mser_history_t root;
+							root.rank = 0;
+							root.size = 1;
+							root.value = v;
+							root.shortcut = history_list->rnum;
+							root.parent = history_list->rnum;
+							root.head = node0;
+							root.tail = node1;
+                                                    
+                                                    
+                                                        
 							node0->root = history_list->rnum;
 							ccv_array_push(history_list, &root);
 							root0 = (ccv_mser_history_t*)ccv_array_get(history_list, history_list->rnum - 1);
@@ -312,12 +323,14 @@ static void _ccv_set_union_mser(ccv_dense_matrix_t* a, ccv_dense_matrix_t* h, cc
 		if (er->stable) \
 		{ \
 			ccv_mser_node_t* node = er->head; \
-			ccv_mser_keypoint_t mser_keypoint = { \
-				.size = er->size, \
-				.keypoint = node->point, \
-				.m10 = 0, .m01 = 0, .m11 = 0, \
-				.m20 = 0, .m02 = 0, \
-			}; \
+ 			ccv_mser_keypoint_t mser_keypoint; \
+ 			mser_keypoint.size = er->size; \
+			mser_keypoint.keypoint = node->point; \
+			mser_keypoint.m10 = 0; \
+                        mser_keypoint.m01 = 0; \
+                        mser_keypoint.m11 = 0; \
+			mser_keypoint.m20 = 0; \
+                        mser_keypoint.m02 = 0; \
 			ccv_point_t min_point = node->point, \
 						max_point = node->point; \
 			for (j = 0; j < er->size; j++) \
@@ -813,12 +826,14 @@ static void _ccv_mscr(ccv_dense_matrix_t* a, ccv_dense_matrix_t* h, ccv_dense_ma
 		if (mscr_area->seq_no > 0) \
 		{ \
 			ccv_mser_node_t* node = mscr_area->head; \
-			ccv_mser_keypoint_t mser_keypoint = { \
-				.size = mscr_area->size, \
-				.keypoint = node->point, \
-				.m10 = 0, .m01 = 0, .m11 = 0, \
-				.m20 = 0, .m02 = 0, \
-			}; \
+			ccv_mser_keypoint_t mser_keypoint;\
+			mser_keypoint.size = mscr_area->size; \
+			mser_keypoint.keypoint = node->point; \
+			mser_keypoint.m10 = 0; \
+                        mser_keypoint.m01 = 0; \
+                        mser_keypoint.m11 = 0; \
+			mser_keypoint.m20 = 0; \
+                        mser_keypoint.m02 = 0; \
 			ccv_point_t min_point = node->point, \
 						max_point = node->point; \
 			for (j = 0; j < mscr_area->size; j++) \

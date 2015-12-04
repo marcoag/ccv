@@ -3,38 +3,72 @@
 #include "3rdparty/sfmt/SFMT.h"
 #include "3rdparty/dsfmt/dSFMT.h"
 
+// const ccv_tld_param_t ccv_tld_default_params = {
+// 	.win_size = {
+// 		15,
+// 		15,
+// 	},
+// 	.level = 5,
+// 	.min_forward_backward_error = 100,
+// 	.min_eigen = 0.025,
+// 	.min_win = 20,
+// 	.interval = 3,
+// 	.shift = 0.1,
+// 	.top_n = 100,
+// 	.rotation = 0,
+// 	.include_overlap = 0.7,
+// 	.exclude_overlap = 0.2,
+// 	.structs = 40,
+// 	.features = 18,
+// 	.validate_set = 0.5,
+// 	.nnc_same = 0.95,
+// 	.nnc_thres = 0.65,
+// 	.nnc_verify = 0.7,
+// 	.nnc_beyond = 0.8,
+// 	.nnc_collect = 0.5,
+// 	.bad_patches = 100,
+// 	.new_deform = 20,
+// 	.track_deform = 10,
+// 	.new_deform_angle = 20,
+// 	.track_deform_angle = 10,
+// 	.new_deform_scale = 0.02,
+// 	.track_deform_scale = 0.02,
+// 	.new_deform_shift = 0.02,
+// 	.track_deform_shift = 0.02,
+// };
+
 const ccv_tld_param_t ccv_tld_default_params = {
-	.win_size = {
+	{
 		15,
 		15,
-	},
-	.level = 5,
-	.min_forward_backward_error = 100,
-	.min_eigen = 0.025,
-	.min_win = 20,
-	.interval = 3,
-	.shift = 0.1,
-	.top_n = 100,
-	.rotation = 0,
-	.include_overlap = 0.7,
-	.exclude_overlap = 0.2,
-	.structs = 40,
-	.features = 18,
-	.validate_set = 0.5,
-	.nnc_same = 0.95,
-	.nnc_thres = 0.65,
-	.nnc_verify = 0.7,
-	.nnc_beyond = 0.8,
-	.nnc_collect = 0.5,
-	.bad_patches = 100,
-	.new_deform = 20,
-	.track_deform = 10,
-	.new_deform_angle = 20,
-	.track_deform_angle = 10,
-	.new_deform_scale = 0.02,
-	.track_deform_scale = 0.02,
-	.new_deform_shift = 0.02,
-	.track_deform_shift = 0.02,
+	}, //win_size
+	5, //level
+        0.025, //min_eigen
+        100, //min_forward_backward_error
+        3, //interval
+        0.1, //shift
+	20, //min_win
+        0.7, //include_overlap
+        0.2, //exclude_overlap
+        40, //structs
+        18, //features
+        0.5, //validate_set
+        0.95, //nnc_same
+	0.65, //nnc_thres
+	0.7, //nnc_verify
+	0.8, //nnc_beyond
+	0.5, //nnc_collect
+	100, //bad_patches
+	20, //new_deform
+	10, //track_deform = 10
+	20, //new_deform_angle 
+	10, //track_deform_angle
+	0.02, //new_deform_scale
+	0.02, //track_deform_scale
+	0.02, //new_deform_shift
+	0.02, //track_deform_shift
+        100, //top_n
+	0, //rotation
 };
 
 #define TLD_GRID_SPARSITY (10)
@@ -344,12 +378,10 @@ static ccv_comp_t _ccv_tld_generate_box_for(ccv_size_t image_size, ccv_size_t in
 	ccv_array_t* agood = *good = ccv_array_new(sizeof(ccv_comp_t), gcap, 0);
 	ccv_array_t* abad = *bad = ccv_array_new(sizeof(ccv_comp_t), 64, 0);
 	double max_overlap = -DBL_MAX;
-	ccv_comp_t best_box = {
-		.classification = {
-			.id = 0,
-		},
-		.rect = ccv_rect(0, 0, 0, 0),
-	};
+	ccv_comp_t best_box;
+        best_box.classification.id = 0;
+        best_box.rect = ccv_rect(0, 0, 0, 0);
+	
 	int i = 0;
 	for_each_box(comp, input_size.width, input_size.height, params.interval, params.shift, image_size.width, image_size.height)
 		double overlap = _ccv_tld_rect_intersect(comp.rect, box);

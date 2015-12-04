@@ -9,15 +9,26 @@
 #include <omp.h>
 #endif
 
+// const ccv_bbf_param_t ccv_bbf_default_params = {
+// 	.interval = 5,
+// 	.min_neighbors = 2,
+// 	.accurate = 1,
+// 	.flags = 0,
+// 	.size = {
+// 		24,
+// 		24,
+// 	},
+// };
+
 const ccv_bbf_param_t ccv_bbf_default_params = {
-	.interval = 5,
-	.min_neighbors = 2,
-	.accurate = 1,
-	.flags = 0,
-	.size = {
+	5, //interval
+	2, //min_neighbors
+	1, //accurate
+	0, //flags
+	{
+                24,
 		24,
-		24,
-	},
+	}, //size
 };
 
 #define _ccv_width_padding(x) (((x) + 3) & -4)
@@ -191,7 +202,15 @@ static int _ccv_prepare_background_data(ccv_bbf_classifier_cascade_t* cascade, c
 				ccv_flip(image, 0, 0, CCV_FLIP_X);
 			if (t % 4 >= 2)
 				ccv_flip(image, 0, 0, CCV_FLIP_Y);
-			ccv_bbf_param_t params = { .interval = 3, .min_neighbors = 0, .accurate = 1, .flags = 0, .size = cascade->size };
+// 			ccv_bbf_param_t params = { .interval = 3, .min_neighbors = 0, .accurate = 1, .flags = 0, .size = cascade->size };
+                        ccv_bbf_param_t params;
+                        
+                        params.interval = 3;
+                        params.min_neighbors = 0;
+                        params.accurate = 1;
+                        params.flags = 0;
+                        params.size = cascade->size;
+                        
 			ccv_array_t* detected = ccv_bbf_detect_objects(image, &cascade, 1, params);
 			memset(idcheck, 0, ccv_min(detected->rnum, negperbg) * sizeof(int));
 			for (j = 0; j < ccv_min(detected->rnum, negperbg); j++)

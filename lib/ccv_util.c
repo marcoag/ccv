@@ -577,16 +577,27 @@ ccv_dense_matrix_t ccv_reshape(ccv_dense_matrix_t* a, int y, int x, int rows, in
 	assert(y + rows <= a->rows);
 	assert(x + cols <= a->cols);
 	assert(x >= 0 && y >= 0);
-	ccv_dense_matrix_t b = {
-		.type = (CCV_UNMANAGED | CCV_GET_DATA_TYPE(a->type) | CCV_GET_CHANNEL(a->type) | CCV_NO_DATA_ALLOC | CCV_MATRIX_DENSE) & ~CCV_GARBAGE,
-		.rows = rows,
-		.cols = cols,
-		.step = a->step,
-		.refcount = 0,
-		.sig = 0,
-		.tag.u8 = 0,
-		.data.u8 = ccv_get_dense_matrix_cell(a, y, x, 0),
-	};
+// 	ccv_dense_matrix_t b = {
+// 		.type = (CCV_UNMANAGED | CCV_GET_DATA_TYPE(a->type) | CCV_GET_CHANNEL(a->type) | CCV_NO_DATA_ALLOC | CCV_MATRIX_DENSE) & ~CCV_GARBAGE,
+// 		.rows = rows,
+// 		.cols = cols,
+// 		.step = a->step,
+// 		.refcount = 0,
+// 		.sig = 0,
+// 		.tag.u8 = 0,
+// 		.data.u8 = ccv_get_dense_matrix_cell(a, y, x, 0),
+// 	};
+        ccv_dense_matrix_t b;
+        
+        b.type = (CCV_UNMANAGED | CCV_GET_DATA_TYPE(a->type) | CCV_GET_CHANNEL(a->type) | CCV_NO_DATA_ALLOC | CCV_MATRIX_DENSE) & ~CCV_GARBAGE;
+	b.rows = rows;
+	b.cols = cols;
+	b.step = a->step;
+	b.refcount = 0;
+	b.sig = 0;
+	b.tag.u8 = 0;
+	b.data.u8 = ccv_get_dense_matrix_cell(a, y, x, 0);
+	
 	return b;
 }
 

@@ -20,6 +20,11 @@
 #include <alloca.h>
 #endif
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+            
 #define CCV_PI (3.141592653589793)
 #define ccmalloc malloc
 #define cccalloc calloc
@@ -467,13 +472,14 @@ enum {
  * @param cols How many columns in the given data memory region.
  * @param scanline The size of a single column in the given data memory region (or known as "bytes per row").
  */
+
 int ccv_read_impl(const void* in, ccv_dense_matrix_t** x, int type, int rows, int cols, int scanline);
 #define ccv_read_n(in, x, type, rows, cols, scanline, ...) \
 	ccv_read_impl(in, x, type, rows, cols, scanline)
 #define ccv_read(in, x, type, ...) \
 	ccv_read_n(in, x, type, ##__VA_ARGS__, 0, 0, 0)
-// this is a way to implement function-signature based dispatch, you can call either
-// ccv_read(in, x, type) or ccv_read(in, x, type, rows, cols, scanline)
+//this is a way to implement function-signature based dispatch, you can call either
+//ccv_read(in, x, type) or ccv_read(in, x, type, rows, cols, scanline)
 // notice that you can implement this with va_* functions, but that is not type-safe
 /**
  * Write image to a file. This function has soft dependencies on [LibJPEG](http://libjpeg.sourceforge.net/) and [LibPNG](http://www.libpng.org/pub/png/libpng.html). No these libraries, no JPEG nor PNG write support.
@@ -2313,5 +2319,9 @@ void ccv_set_cli_output_levels(int level);
 int ccv_get_cli_output_levels(void);
 
 #define CCV_CLI_OUTPUT_LEVEL_IS(a) (a & ccv_get_cli_output_levels())
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

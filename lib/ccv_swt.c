@@ -1,29 +1,56 @@
 #include "ccv.h"
 #include "ccv_internal.h"
 
-const ccv_swt_param_t ccv_swt_default_params = {
-	.interval = 1,
-	.same_word_thresh = { 0.1, 0.8 },
-	.min_neighbors = 1,
-	.scale_invariant = 0,
-	.size = 3,
-	.low_thresh = 124,
-	.high_thresh = 204,
-	.max_height = 300,
-	.min_height = 8,
-	.min_area = 38,
-	.letter_occlude_thresh = 3,
-	.aspect_ratio = 8,
-	.std_ratio = 0.83,
-	.thickness_ratio = 1.5,
-	.height_ratio = 1.7,
-	.intensity_thresh = 31,
-	.distance_ratio = 2.9,
-	.intersect_ratio = 1.3,
-	.letter_thresh = 3,
-	.elongate_ratio = 1.9,
-	.breakdown = 1,
-	.breakdown_ratio = 1.0,
+// const ccv_swt_param_t ccv_swt_default_params = {
+// 	.interval = 1,
+// 	.same_word_thresh = { 0.1, 0.8 },
+// 	.min_neighbors = 1,
+// 	.scale_invariant = 0,
+// 	.size = 3,
+// 	.low_thresh = 124,
+// 	.high_thresh = 204,
+// 	.max_height = 300,
+// 	.min_height = 8,
+// 	.min_area = 38,
+// 	.letter_occlude_thresh = 3,
+// 	.aspect_ratio = 8,
+// 	.std_ratio = 0.83,
+// 	.thickness_ratio = 1.5,
+// 	.height_ratio = 1.7,
+// 	.intensity_thresh = 31,
+// 	.distance_ratio = 2.9,
+// 	.intersect_ratio = 1.3,
+// 	.letter_thresh = 3,
+// 	.elongate_ratio = 1.9,
+// 	.breakdown = 1,
+// 	.breakdown_ratio = 1.0,
+// };
+
+const ccv_swt_param_t ccv_swt_default_params = 
+{ 
+        1,
+        1,
+        0,
+        0,
+	{ 0.1, 0.8 },
+	3,
+        124,
+	204,
+	300,
+	8,
+	38,
+	3,
+	8,
+	0.83,
+	1.5,
+	1.7,
+	31,
+	2.9,
+	1.3,
+	1.9,
+        3,
+	1,
+	1.0,
 };
 
 static inline CCV_IMPLEMENT_MEDIAN(_ccv_swt_median, int)
@@ -572,7 +599,9 @@ static ccv_array_t* _ccv_swt_break_words(ccv_array_t* textline, ccv_swt_param_t 
 		mean = mean / (t->neighbors - 1);
 		if (sqrt(var) > mean * params.breakdown_ratio)
 		{
-			ccv_textline_t nt = { .neighbors = 0, .letters = 0 };
+			ccv_textline_t nt;
+                        nt.neighbors = 0;
+                        nt.letters = 0;
 			_ccv_swt_add_letter(&nt, t->letters[0]);
 			for (j = 0; j < t->neighbors - 1; j++)
 			{
